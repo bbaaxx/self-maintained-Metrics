@@ -54,10 +54,26 @@ jobs:
         env:
           GIT_REF: ${{ github.head_ref || 'master' }}
         run: docker build -t lowlighter/metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g') .
-      - name: Run tests
+      - name: Run smoke tests
         env:
           GIT_REF: ${{ github.head_ref || 'master' }}
-        run: docker run --rm --entrypoint="" lowlighter/metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g') npm run test-metrics
+        run: |
+          IMAGE="lowlighter/metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g')"
+          docker run --rm --entrypoint="" \
+            -e INPUT_TOKEN=MOCKED_TOKEN \
+            -e INPUT_USER=lowlighter \
+            -e INPUT_TEMPLATE=classic \
+            -e INPUT_BASE= \
+            -e INPUT_PLUGIN_ACHIEVEMENTS=yes \
+            -e INPUT_PLUGIN_ACTIVITY=yes \
+            -e INPUT_PLUGIN_HABITS=yes \
+            -e INPUT_CONFIG_OUTPUT=json \
+            -e INPUT_PLUGINS_ERRORS_FATAL=yes \
+            -e INPUT_DRYRUN=yes \
+            -e INPUT_USE_MOCKED_DATA=yes \
+            -e INPUT_VERIFY=no \
+            -e INPUT_RETRIES=1 \
+            "$IMAGE" node source/app/action/index.mjs
 
   # Run CodeQL on branch
   analyze:
