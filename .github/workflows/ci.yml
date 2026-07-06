@@ -4,6 +4,12 @@ on:
   push:
     branches: [ master ]
 
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  security-events: write
+
 jobs:
 
   # Build, test and analyze
