@@ -9,6 +9,10 @@ permissions:
   contents: read
   security-events: write
 
+env:
+  PUPPETEER_SKIP_DOWNLOAD: true
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+
 jobs:
 
   # Run linter to ensure new code respect coding rules
